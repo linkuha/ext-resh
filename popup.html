@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Popup</title>
+		<style>
+		button {
+			display: inline-block;
+			height: 19px;
+			padding: 0;
+			margin: 0;
+			//vertical-align: middle;
+			width: 19px;
+		}
+		#btn-refresh {
+			background-image: url('img/refresh.png');
+			background-size: 15px 15px;
+			height: 19px;  
+			width: 19px;
+		}
+		</style>
+	</head>
+	<body>
+		<div style="width:220px;border:1px solid yellow;">
+			<div>
+				<p style="display:inline-block;">Current profile:</p> 
+				<select id="current-profile" name="profile[]">
+					<option selected disabled>not select...</option>
+				</select>
+				<button id="btn-refresh" disabled></button>
+			</div>
+	  
+			<hr/>
+			<div style="margin:0 auto;">
+				<input id="btn-activator" disabled="disabled" style="width:200px;background:#ccc" type="button" value="Activate on Page"/>
+			</div>
+			<hr/>
+			<div style="margin:0 auto;">
+				<input id="params" style="width:200px;" type="button" value="Parameters"/>
+			</div>
+		</div>
+		<script src="js/popup.js"></script>
+	</body>
+</html>

@@ -1,0 +1,10 @@
+.collapse-block {
+	cursor: pointer;
+	background-color: #ccc;
+}
+
+span.regexp {
+	padding: 2px; 
+	background-color: red; 
+	margin: 0px;
+}

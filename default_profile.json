@@ -1,0 +1,57 @@
+{
+	"id": 0,
+	"name": "Default",
+	"code": 999,
+	"regexp": [
+		{
+			"exp": "W[0-9]C",
+			"active": 1
+		},
+		{
+			"exp": "NMDCClient::Mode",
+			"active": 0
+		},
+		{
+			"exp": "audio pts less than first video pts",
+			"active": 1
+		},
+		{
+			"exp": "Corrupted packet @[0-9]{6,10}",
+			"active": 1
+		},
+		{
+			"exp": "UpdateService(?:.{7,9}): Ver from file:",
+			"active": 1
+		}
+	],
+	"collapse": [
+		{
+			"name": "запуск ядра",
+			"start": "--------- beginning of /dev/log/system",
+			"end": "============ Request must remove ============",
+			"active": 1
+		},
+		{
+			"name": "запуск ядра 2",
+			"start": "BootCompleteReceiver(?:.{7,9}): Start services",
+			"end": "============ Request firmware ============",
+			"active": 1
+		}
+	],
+	"repeats": [
+		{
+			"hz": "",
+			"active": 1
+		}
+	],
+	"url_matches": [
+			{
+				"exp": "google.ru",
+				"active": 1
+			},
+			{
+				"exp": "/stblog.php",
+				"active": 1
+			}
+	]
+}
