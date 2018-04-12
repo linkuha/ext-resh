@@ -6,7 +6,7 @@ if (typeof chrome == "undefined" || typeof chrome.extension == "undefined")
     window.chrome = window.browser;
 
 // TODO may be use createTreeWalker() method??
-var regexpHighlight = function RHL(strRegexp, searchNode) 
+var regexpHighlight = function RHL(strRegexp, color, searchNode) 
 {
 	var regex = new RegExp(strRegexp, "gim");
 	
@@ -21,7 +21,7 @@ var regexpHighlight = function RHL(strRegexp, searchNode)
 		// == ELEMENT_NODE 
 		if (currentNode.nodeType === 1 && (excludes + ',').indexOf(currentNode.nodeName.toLowerCase() + ',') === -1) 
 		{
-			RHL(strRegexp, currentNode);
+			RHL(strRegexp, color, currentNode);
 		}
 		// != TEXT_NODE
 		if (currentNode.nodeType !== 3 || !regex.test(currentNode.data) ) 
@@ -33,9 +33,10 @@ var regexpHighlight = function RHL(strRegexp, searchNode)
 		
 		var matchId = GUID();
 
-		// check all matches find???
-		var replaceCode = '<a name='+matchId+' id="'+matchId+'" style="cursor: pointer;"><span class="regexp">'+currentNode.data.match(regex)[0]+'</span></a>';
-		var html = currentNode.data.replace(regex, replaceCode);
+		var html = currentNode.data.replace(regex, function(match) {
+			var code = '<a name='+matchId+' id="'+matchId+'"><span style="background-color: $(color)" class="regexp">$(replace)</span></a>';
+			return code.replace("$(replace)", match).replace("$(color)", color);
+		});
 		
 		var frag = (function()
 		{
@@ -196,7 +197,7 @@ var refresh = function(profile)
 			});
 			
 		}
-		/*
+		
 		if (typeof profile.regexp !== "undefined") {
 			
 			var length = Object.keys(profile.regexp).length;
@@ -206,9 +207,9 @@ var refresh = function(profile)
 
 				if (0 == parseInt(regexps[key].active)) { return; }
 				
-				regexpHighlight(regexps[key].exp);
+				regexpHighlight(regexps[key].exp, regexps[key].color);
 			});
-		}*/
+		}
 
 		if (null !== profile.repeats) {
 			var length = Object.keys(profile.repeats).length;

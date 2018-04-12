@@ -160,8 +160,9 @@ var reloadRegexp = function(regexps) {
 	Object.keys(regexps).forEach(function (key) {
 		var inputText = '<input type="text" value="' + regexps[key].exp + '"/>';
 		var checkbox = '<input type="checkbox" ' + (regexps[key].active == 1 ? 'checked' : '') + ' />';
+		var color = '<input type="color" value="' + regexps[key].color + '"/>';
 		var delHref = '<a href="#" class="delete-link" title="Delete this item">&laquo; del</a>';
-		html += '<tr><td>' + inputText + '</td><td>' + checkbox + delHref + '</td></tr>';
+		html += '<tr><td>' + inputText + '</td><td>' + color + '</td><td>' + checkbox + delHref + '</td></tr>';
 	});
 	
 	currRegexp.tBodies.item(0).innerHTML = html;
@@ -173,6 +174,7 @@ var readRegexp = function() {
 	for (var i = 0; i < entries.length; i++) {
 		var tmpObj = {
 			"exp": entries[i].querySelector('input[type=text]').value,
+			"color": entries[i].querySelector('input[type=color]').value,
 			"active": (entries[i].querySelector('input[type=checkbox]').checked ? 1 : 0)
 		};
 		values.push(tmpObj);
@@ -348,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	bNewRegexp.querySelector('input[type=submit]').addEventListener('click', function (event) {
 		var exp = bNewRegexp.querySelector('input[type=text]');
+		var clr = bNewRegexp.querySelector('input[type=color]');
 
 		if (exp.value == null || exp.value == "") {
 			alert("Please fill inputs for adding regexp item.");
@@ -358,8 +361,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		var html = '';
 		var inputText = '<input type="text" value="' + exp.value + '"/>';
 		var checkbox = '<input type="checkbox" checked />';
+		var color = '<input type="color" value="' + clr.value + '"/>';
 		var delHref = '<a href="#" class="delete-link" title="Delete this item">&laquo; del</a>';
-		html += '<tr><td>' + inputText + '</td><td>' + checkbox + delHref + '</td></tr>';
+		html += '<tr><td>' + inputText + '</td><td>' + color + '</td><td>' + checkbox + delHref + '</td></tr>';
 		
 		currRegexp.tBodies.item(0).innerHTML += html;
 	});
@@ -368,6 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		var name = bNewCollapse.querySelector('input[name=new-short-name]');
 		var start = bNewCollapse.querySelector('input[name=new-start]');
 		var end = bNewCollapse.querySelector('input[name=new-end]');
+		var clr = bNewCollapse.querySelector('input[type=color]');
 		
 		if (
 			start.value == null || start.value == "" || 
@@ -383,9 +388,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		var inputName = '<input type="text" class="input-short-name" value="' + name.value + '"/>';
 		var inputStart = '<input type="text" class="input-start" value="' + start.value + '"/>';
 		var inputEnd = '<input type="text" class="input-end" value="' + end.value + '"/>';
+		var color = '<input type="color" value="' + clr.value + '"/>';
 		var checkbox = '<input type="checkbox" checked />';
 		var delHref = '<a href="#" class="delete-link" title="Delete this item">&laquo; del</a>';
-		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td><input type="color"/></td><td>' + checkbox + delHref + '</td></tr>';
+		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td>' + color + '</td><td>' + checkbox + delHref + '</td></tr>';
 		
 		currCollapse.tBodies.item(0).innerHTML += html;
 	});

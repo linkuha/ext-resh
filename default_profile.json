@@ -4,24 +4,29 @@
 	"code": 999,
 	"regexp": [
 		{
-			"exp": "W[0-9]C",
-			"active": 1
+			"exp": "Could not find method",
+			"active": 1,
+			"color": "#fbf404"
 		},
 		{
 			"exp": "NMDCClient::Mode",
-			"active": 0
+			"active": 0,
+			"color": "#ff0000"
 		},
 		{
 			"exp": "audio pts less than first video pts",
-			"active": 1
+			"active": 1,
+			"color": "#ff0000"
 		},
 		{
 			"exp": "Corrupted packet @[0-9]{6,10}",
-			"active": 1
+			"active": 1,
+			"color": "#ff0000"
 		},
 		{
 			"exp": "UpdateService(?:.{7,9}): Ver from file:",
-			"active": 1
+			"active": 1,
+			"color": "#ff0000"
 		}
 	],
 	"collapse": [
