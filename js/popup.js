@@ -74,6 +74,7 @@ window.onload = function(){
 	
 	var btnActivator = document.getElementById("btn-activator");
 	var btnRefresh = document.getElementById("btn-refresh");
+	var btnOptions = document.getElementById("params");
 	var activeTabsKey = "active_tabs";
 	
 	var selCurrentProfile = document.getElementById("current-profile");
@@ -207,7 +208,10 @@ window.onload = function(){
 				}
 			});
 		});
+		
+		btnOptions.addEventListener("click", function (event) {
+			chrome.runtime.openOptionsPage();
+		});
 	});
-	
 
 }

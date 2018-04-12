@@ -5,9 +5,7 @@
 if (typeof chrome == "undefined" || typeof chrome.extension == "undefined")
     window.chrome = window.browser;
 
-var collapseFindFlag = 0;
-
-// DOM TreeWalker ?
+// TODO may be use createTreeWalker() method??
 var regexpHighlight = function RHL(strRegexp, searchNode) 
 {
 	var regex = new RegExp(strRegexp, "gim");
@@ -69,12 +67,38 @@ var regexpHighlight = function RHL(strRegexp, searchNode)
 	}
 }
 
-var replaceCollapseNode = function(node, replaceWith, groupId, regex) 
+// for ECMAScript 6 (ES6) +
+var createCollapseBlock = function(name, body, color) {
+	var str = `
+		<div class="collapsed" style="background-color: $(color)">
+			<div class="coll-header"><strong>$(name)</strong></div>
+			<div class="coll-body hidden">$(body)</div>
+		</div>
+	`;
+	return str.replace("$(color)", color).replace("$(name)", name).replace("$(body)", body);
+}
+
+var collapseFindFlag = 0;
+
+var replaceCollapseNode = function(node, replaceWith, color, regex, tmpContent) 
 {
 	var parent = node.parentNode;
+	
+	/*var resultArr;
+	while ((resultArr = reregex.exec(source)) !== null) {
+		
+	}*/
 
-	var replaceCode = '<span class="collapse-block hidden-'+groupId+'">'+replaceWith+'</span>';
-	var html = node.data.replace(regex, replaceCode);
+	var html;
+	if (tmpContent && typeof tmpContent != "undefined") {
+		html = tmpContent.replace(regex, function(match) {
+			return createCollapseBlock(replaceWith, match, color);
+		});
+	} else {
+		html = node.data.replace(regex, function(match) {
+			return createCollapseBlock(replaceWith, match, color);
+		});
+	}
 	
 	var frag = (function()
 	{
@@ -87,60 +111,72 @@ var replaceCollapseNode = function(node, replaceWith, groupId, regex)
 		}
 		return frag;
 	})();
-	parent.insertBefore(frag, node);
-	parent.removeChild(node);
+	
+	if (tmpContent && typeof tmpContent != "undefined") {
+		parent.innerHTML = html;
+	} else {
+		parent.insertBefore(frag, node);
+		parent.removeChild(node);
+	}
+	// TODO may be use replaceChild() method???
 }
 
-var collapseText = function CLLPS(startText, endText, replaceWith, searchNode) 
+var collapseText = function CLLPS(startText, endText, replaceWith, color, searchNode) 
 {
 	var regex = new RegExp(startText+"((?:.|\n)*?)"+endText, "g");
 	var regexS = new RegExp(startText+"((?:.|\n)*?)", "g");
-	var regexE = new RegExp(startText+"((?:.|\n)*?)", "g");
+	var regexE = new RegExp("((?:.|\n)*?)"+endText, "g");
 	
 	var childNodes = (searchNode || document.body).childNodes;
 	
+	var len = childNodes.length;
 	var cnLength = childNodes.length;
 	var excludes = "html,head,style,title,link,script,object,iframe";
 	
-	//console.log(regex.source);
+	var tmpContent = "";
+	//console.log((searchNode ? searchNode.tagName : "") + "  " + len);
 	
-	while (cnLength--)
+	while (len)
 	{
-		var currentNode = childNodes[cnLength];
-
+		var currentNode = childNodes[cnLength - len];
+		len--;
+		
 		// == ELEMENT_NODE 
 		if (currentNode.nodeType === 1 && (excludes + ',').indexOf(currentNode.nodeName.toLowerCase() + ',') === -1) 
 		{
-			CLLPS(startText, endText, replaceWith, currentNode);
+			if (currentNode.classList.contains("collapsed")) { continue; }
+			CLLPS(startText, endText, replaceWith, color, currentNode);
 		}
 		// != TEXT_NODE
 		if (currentNode.nodeType !== 3) { continue; }
-
-		if (regex.test(currentNode.data)) 
+		
+		//if (currentNode.nodeName == "#text") {
+			//console.log(currentNode.textContent.length > 150 ? currentNode.textContent.substr(0, 150) : currentNode.textContent);
+			//console.log(currentNode.data.length)
+		//}
+		
+		if (currentNode.data.length > 64000) {
+			tmpContent += currentNode.data;
+			if (currentNode.nextSibling.nodeName == "#text") {
+				continue;
+			}
+		} else {
+			if (currentNode.previousSibling && currentNode.previousSibling.nodeName == "#text" && currentNode.previousSibling.length > 64000) {
+				tmpContent += currentNode.data;
+			}
+		}
+		
+		if (regex.test(tmpContent.length > 0 ? tmpContent : currentNode.data)) 
 		{
 			console.log('es');
-			var matchId = GUID();
 			
-			replaceCollapseNode(currentNode, replaceWith, matchId, regex);
-		} /*else {
-			if (collapseFindFlag == 0) 
-			{
-				if (regexS.test(currentNode.data)) 
-				{
-					collapseFindFlag = GUID();
-				
-					replaceCollapseNode(currentNode, collapseFindFlag, regexS);
-				}
-			} 
-			else {
-				if (regexE.test(currentNode.data)) 
-				{
-					replaceCollapseNode(currentNode, collapseFindFlag, regexE);
-					
-					collapseFindFlag = 0;
-				}
-			}
-		}*/
+			if (tmpContent.length > 0) {
+				replaceCollapseNode(currentNode, replaceWith, color, regex, tmpContent);
+				tmpContent = "";
+			} else {
+				replaceCollapseNode(currentNode, replaceWith, color, regex);
+			}	
+		}
 	}
 }
 
@@ -156,11 +192,11 @@ var refresh = function(profile)
 
 				if (0 == parseInt(collapses[key].active)) { return; }
 				
-				collapseText(collapses[key].start, collapses[key].end, collapses[key].name);
+				collapseText(collapses[key].start, collapses[key].end, collapses[key].name, collapses[key].color);
 			});
 			
 		}
-		
+		/*
 		if (typeof profile.regexp !== "undefined") {
 			
 			var length = Object.keys(profile.regexp).length;
@@ -172,7 +208,7 @@ var refresh = function(profile)
 				
 				regexpHighlight(regexps[key].exp);
 			});
-		}
+		}*/
 
 		if (null !== profile.repeats) {
 			var length = Object.keys(profile.repeats).length;
@@ -206,6 +242,7 @@ if (!chrome.devtools)
 			
 			getActiveProfile(refresh);
 			
+			console.log("task done.");
 			sendResponse({status: "ok!"});
 		}
 	});
@@ -222,20 +259,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 	}
 });
 
-/*
-var port = chrome.runtime.connect();
-
-window.addEventListener("message", function(event) {
-  // We only accept messages from ourselves
-  if (event.source != window)
-    return;
-
-  if (event.data.type && (event.data.type == "FROM_PAGE")) {
-    console.log("Content script received: " + event.data.text);
-    port.postMessage(event.data.text);
-  }
-}, false);
-*/
 
 function get_random_color() 
 {
@@ -265,3 +288,18 @@ function GUID2()
 		return v.toString(16);
 	}).toUpperCase();
 }
+
+document.body.addEventListener("click", function (event) {
+	var target = event.target || event.srcElement;
+    var needle = target.parentNode;
+
+	if (needle.tagName == 'DIV' && needle.classList.contains("coll-header")) {
+		var innerbody = needle.parentNode.querySelector("div.coll-body");
+        if (!innerbody.classList.contains("hidden")) {
+			innerbody.classList.add('hidden');
+			return;
+        } else {
+			innerbody.classList.remove('hidden');
+		}
+    }
+});

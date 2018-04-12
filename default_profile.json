@@ -27,15 +27,17 @@
 	"collapse": [
 		{
 			"name": "запуск ядра",
-			"start": "--------- beginning of /dev/log/system",
-			"end": "============ Request must remove ============",
-			"active": 1
+			"start": "SQLiteCastStore",
+			"end": "Reader thread stopped",
+			"active": 1,
+			"color": "#ffddcc"
 		},
 		{
 			"name": "запуск ядра 2",
-			"start": "BootCompleteReceiver(?:.{7,9}): Start services",
-			"end": "============ Request firmware ============",
-			"active": 1
+			"start": "sniff through StreamSniffFFMPEG failed",
+			"end": "FFmpegExtractor::FFmpegExtractor",
+			"active": 1,
+			"color": "#cccccc"
 		}
 	],
 	"repeats": [

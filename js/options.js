@@ -189,9 +189,10 @@ var reloadCollapse = function(collapses) {
 		var inputName = '<input type="text" class="input-short-name" value="' + collapses[key].name + '"/>';
 		var inputStart = '<input type="text" class="input-start" value="' + collapses[key].start + '"/>';
 		var inputEnd = '<input type="text" class="input-end" value="' + collapses[key].end + '"/>';
+		var color = '<input type="color" value="' + collapses[key].color + '"/>';
 		var checkbox = '<input type="checkbox" ' + (collapses[key].active == 1 ? 'checked' : '') + ' />';
 		var delHref = '<a href="#" class="delete-link" title="Delete this item">&laquo; del</a>';
-		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td>' + checkbox + delHref + '</td></tr>';
+		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td>' + color + '</td><td>' + checkbox + delHref + '</td></tr>';
 	});
 	
 	currCollapse.tBodies.item(0).innerHTML = html;
@@ -205,6 +206,7 @@ var readCollapse = function() {
 			"name": entries[i].querySelector('input.input-short-name').value,
 			"start": entries[i].querySelector('input.input-start').value,
 			"end": entries[i].querySelector('input.input-end').value,
+			"color": entries[i].querySelector('input[type=color]').value,
 			"active": (entries[i].querySelector('input[type=checkbox]').checked ? 1 : 0)
 		};
 		values.push(tmpObj);
@@ -383,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		var inputEnd = '<input type="text" class="input-end" value="' + end.value + '"/>';
 		var checkbox = '<input type="checkbox" checked />';
 		var delHref = '<a href="#" class="delete-link" title="Delete this item">&laquo; del</a>';
-		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td>' + checkbox + delHref + '</td></tr>';
+		html += '<tr><td>' + inputName + '</td><td>' + inputStart + '</td><td>' + inputEnd + '</td><td><input type="color"/></td><td>' + checkbox + delHref + '</td></tr>';
 		
 		currCollapse.tBodies.item(0).innerHTML += html;
 	});
