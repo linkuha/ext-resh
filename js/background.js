@@ -52,6 +52,9 @@ chrome.runtime.onMessage.addListener (function(request, sender, sendResponse) {
 		sendResponse({status: "ok!"});
 	}
 
+	if (request.action == "getTabId") {
+		sendResponse({tabId: sender.tab.id});
+	}
 });
 
 

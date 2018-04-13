@@ -250,12 +250,30 @@ if (!chrome.devtools)
 }
 	
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-	//console.log(changes);
 	for (var item in changes) {
 		if (item == "activeProfileID" || item == "active_tabs") { 
 			continue;
-		} else {
-			alert("Profile was changed in options, you must to reload page.");
+		} else {	
+			chrome.storage.local.get(["active_tabs"], function(result) {			
+
+				var id = result.active_tabs;
+				var len = Object.keys(result.active_tabs).length;
+				var flag = false;
+				
+				if (len > 0) chrome.runtime.sendMessage({action: "getTabId"}, function(response) {
+					var myTabId = response.tabId;
+						
+					Object.keys(result.active_tabs).forEach(function (key) {
+						if (myTabId == result.active_tabs[key]) {
+							flag = true;
+						}
+					});
+					
+					if (flag) {
+						alert("Profile was changed in options, you must to reload page.");
+					}
+				});
+			});	
 		}
 	}
 });
