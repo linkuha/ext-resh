@@ -3,7 +3,7 @@
 	"name": "RegExp Search and Highlight",
 	"short_name": "RESH",
 	"description": "Find text content with regular expression and highlight it, or collapse unnecessary blocks.",
-	"version": "0.1.0",
+	"version": "0.1.3",
 	"default_locale": "en",
 	"icons": {
 		"128": "img/icon128.png",
@@ -25,14 +25,10 @@
 		"scripts": ["js/background.js"],
 		"persistent": false
 	},
-
 	"options_page": "options.html",
-
 	"permissions": [
 		"activeTab", "storage"
-		//"http://site.ru/*"
 	],
-	
 	"browser_action": {
 		"default_title": "RegExp Search and Highlight",
 		"default_icon": "img/icon48.png",

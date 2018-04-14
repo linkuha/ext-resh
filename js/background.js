@@ -59,19 +59,6 @@ chrome.runtime.onMessage.addListener (function(request, sender, sendResponse) {
 
 
 
-// messages from content js
-chrome.extension.onConnect.addListener(function(port){
-	//port.onMessage.addListener(factory);
-});
-
-// if defaul_popup not set in manifest
-chrome.browserAction.onClicked.addListener(function() {
-    console.log("alert from background.js");
-	
-	chrome.tabs.executeScript({file: "js/inject.js"}, function() {
-        console.log("content loaded");
-    });
-});
 
 
 
